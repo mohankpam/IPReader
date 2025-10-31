@@ -84,8 +84,6 @@ Feel free to open issues or PRs. Small improvements that are useful:
 
 ## License
 
-This repository is provided under the MIT License. See the `LICENSE` file for details (or add one if you want to apply MIT).
+Unlicensed
 
 ---
-
-If you'd like a shorter README or one with badges/CI instructions, tell me what CI provider you prefer and I can add it.
