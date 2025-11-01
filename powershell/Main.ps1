@@ -1,12 +1,13 @@
 Function Main {
+    Clear-Host
     Write-Host "`nFetching IP Addresses"
 
     $localIP = Get-LocalIPAddress
     $publicIP = Get-PublicIPAddress("https://api.ipify.org?format=json");
 
     Write-Host "`nResults"
-    Write-Host ($null -eq $localIP ? "Not found" : "$localIP`n")
-    Write-Host ($null -eq $publicIP ? "Not found" : "$publicIP`n")
+    Write-Host ($null -eq $localIP ? "Not found" : "Local IP: $localIP`n")
+    Write-Host ($null -eq $publicIP ? "Not found" : "Public IP: $publicIP`n")
 }
 
 function Get-LocalIPAddress {
@@ -32,11 +33,7 @@ function Get-PublicIPAddress {
 
     try {
         if ($null -ne $IPProviderUrl) {
-            $webJob = Start-Job -ScriptBlock { Invoke-WebRequest -Uri $using:IPProviderUrl }
-            Wait-Job $webJob
-
-            $webResponse = Receive-Job $webJob
-            Remove-Job $webJob # Remove the job after receiving the output
+            $webResponse = Invoke-WebRequest -Uri $IPProviderUrl -Method Get
 
             $responseObject = $webResponse | Where-Object { $_.PSObject.Properties.Name -ccontains 'Content' }
             if ($null -ne $responseObject) {
@@ -44,7 +41,7 @@ function Get-PublicIPAddress {
                 return $publicIPAddress
             }
             else {
-                Write-Error "No response received, check with provider: $($using:IPProviderUrl)"
+                Write-Error "No response received, check with provider: $($IPProviderUrl)"
                 return $null
             }
         }
@@ -60,4 +57,5 @@ function Get-PublicIPAddress {
     }
 }
 
+# Invoking the Main Function
 Main
